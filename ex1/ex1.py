@@ -170,15 +170,15 @@ print "It should be inverted A"
 print
 
 testCase(test4)
-print "It should be inverted A"
+print "It should be A"
 print
 
 testCase(test5)
-print "It should be inverted A"
+print "It should be A"
 print
 
 testCase(test6)
-print "It should be inverted A"
+print "It should be A"
 
 
 
