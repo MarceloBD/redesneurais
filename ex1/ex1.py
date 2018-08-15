@@ -77,7 +77,7 @@ w = [[0, 0, 0, 0, 0],
 	 [0, 0, 0, 0, 0]]
 
 eta = 0.5
-activate = 0
+activateResult = 0
 wmodified = 0
 
 def activationFunc(value):
@@ -100,9 +100,9 @@ def processInput(inputMatrix):
 	return output
 	
 def isCorrectLabel(output, label):
-	global activate
-	activate = activationFunc(output)
-	if (label != activate):
+	global activateResult
+	activateResult = activationFunc(output)
+	if (label != activateResult):
 		return 0
 	else:
 		return 1
@@ -113,12 +113,12 @@ def correctWeights(inputMatrix, label):
 	wmodified = 1
 	for x in range(0, 5):
 		for y in range(0, 5):
-			w[x][y] = w[x][y] - eta*(activate-label)*inputMatrix[x][y]
+			w[x][y] = w[x][y] + eta*(label-activateResult)*inputMatrix[x][y]
+
 
 def perceptromAlgorithm(inputMatrix, label):
 	output = processInput(inputMatrix)
 	goodLabel = isCorrectLabel(output, label)
-	global counter
 	if(goodLabel != 1):
 		correctWeights(inputMatrix, label)
 		perceptromAlgorithm(inputMatrix, label)
@@ -135,7 +135,7 @@ def trainingCases(number):
 
 def trainingLoop(actualTrainingCase):
 	global wmodified, trainLabel
-	for i in range (1,6):
+	for i in range (1,7):
 		wmodified = 0
 		if(actualTrainingCase == i):
 			continue
@@ -154,9 +154,31 @@ def testCase(inputMatrix):
 
 # main program # 
 trainingLoop(0)
-#printMatrix(w)
-testCase(test1)
+print "Weigth matrix"
+printMatrix(w)
 
+print
+testCase(test1)
+print "It should be inverted A"
+print
+testCase(test2)
+print "It should be inverted A"
+print
+
+testCase(test3)
+print "It should be inverted A"
+print
+
+testCase(test4)
+print "It should be inverted A"
+print
+
+testCase(test5)
+print "It should be inverted A"
+print
+
+testCase(test6)
+print "It should be inverted A"
 
 
 
