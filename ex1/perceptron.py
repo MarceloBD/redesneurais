@@ -7,12 +7,18 @@ class Perceptron():
         self.weights = [rand(0, 1) for _ in range(num_inputs)]
         self.bias = rand(0, 1)
 
-    def generate_data(self, base_value, noise_val):
+    def generate_data(self, base_value):
         data = base_value
         noises_qtd = int(rand(0, int(len(base_value)/5)))
         for i in range(noises_qtd):
-            data[int(rand(0, len(base_value)))] = noise_val
+            pos = int(rand(0, len(base_value)))
+            data[pos] = 1 if data[pos] == -1 else -1
         return data
+
+    def write_text(self, data, name):
+        with open(name, 'w') as file:
+            for item in data:
+                file.write("{}\n".format(item))
 
     def activation_function(self, x):
         return 1 if x > 0 else -1
