@@ -1,17 +1,17 @@
 import numpy as np
-from random import uniform as rand
+import random
 
 
 class Perceptron():
     def __init__(self, num_inputs):
-        self.weights = [rand(0, 1) for _ in range(num_inputs)]
-        self.bias = rand(0, 1)
+        self.weights = [random.uniform(0, 1) for _ in range(num_inputs)]
+        self.bias = random.uniform(0, 1)
 
     def generate_data(self, base_value):
-        data = base_value
-        noises_qtd = int(rand(0, int(len(base_value)/5)))
+        data = base_value.copy()
+        noises_qtd = random.randint(1, len(data)/5)
         for i in range(noises_qtd):
-            pos = int(rand(0, len(base_value)))
+            pos = int(random.uniform(0, len(data)))
             data[pos] = 1 if data[pos] == -1 else -1
         return data
 
