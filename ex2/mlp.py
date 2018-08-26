@@ -10,6 +10,9 @@ The network is distributed as follows
 	b0	b1	b2
 
 	where b0 = 0 and where each neuron receives w_n weights
+
+reference: Matt Mazur, A Step by Step Backpropagation Example 
+				https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
 """
 import random
 
@@ -17,6 +20,9 @@ import random
 class Mlp():
 	
 	def __init__(self, neurons_per_layer, num_layers):
+		"""
+		Constructs the class 
+		"""
 		self.weights = [random.uniform(0, 1) for _ in range(neurons_per_layer)]
 		self.bias = [random.uniform(0, 1) for _ in range(num_layers)]
 		self.output = [0 for _ in range(num_layers)]
@@ -60,5 +66,34 @@ class Mlp():
 		(activation function)
 		"""
 		return 1/(1 + e^(-total_net_input))
+
+
+	def output_error_derivative(respect_weight):
+		"""
+		Calculates error derivative for an output neuron with respect to a weight 
+		"""
+		position = respect_weight%(neurons_per_layer()^2)
+		h_relative = int(position/neurons_per_layer())
+		o_relative = position%neurons_per_layer()
+
+		h = h_relative + (number_of_layers()*(number_of_layers()-2))
+		o = o_relative + (number_of_layers()*(number_of_layers()-1))
+		
+		dEdOut = -(self.target[o_relative]-self.output[o])
+		dOutdNet = self.output[o]*(1-self.output[o])
+		dNetdW = self.output[h] 
+		return dEdOut*dOutdNet*dNetdW
+
+	def hidden_error_derivative(respect_weight):
+		"""
+		Calculates error derivative for an hidden neuron with respect to a weight 
+		"""
+
+
+
+	def set_target(target):
+		self.target = target
+
+
 
 
