@@ -152,6 +152,3 @@ class Mlp():
 		for i in range(self.terminal_neurons):
 			print (str(self.output[self.terminal_neurons+self.hidden_neurons+i])+' '+str(self.output[i]))
 		print('')
-
-
-
