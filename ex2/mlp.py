@@ -20,7 +20,7 @@ reference: Matt Mazur, A Step by Step Backpropagation Example
 				https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
 """
 import random
-
+import math
 
 class Mlp():
 	
@@ -29,9 +29,8 @@ class Mlp():
 		Constructs the class 
 		"""
 		self.terminal_neurons = terminal_neurons
-		self.hidden_neurons = math.log(self.terminal_neurons, 2.0)
-		number_weights_in_layer = self.hidden_neurons**self.terminal_neurons
-
+		self.hidden_neurons = int(math.log(self.terminal_neurons, 2.0))
+		number_weights_in_layer = int(self.hidden_neurons**self.terminal_neurons)
 		self.input_weights = [random.uniform(0, 1) for _ in range(number_weights_in_layer)]
 		self.hidden_weights = [random.uniform(0, 1) for _ in range(number_weights_in_layer)]
 		self.bias = [random.uniform(0, 1) for _ in range(3)]
@@ -40,9 +39,11 @@ class Mlp():
 		
 	def set_target(self, target):
 		"""
-		Defines the expected output of the ouput neurons 
+		Defines the expected output of the ouput neurons and the input of the network 
 		"""
 		self.target = target
+		for i in range(self.terminal_neurons):
+			self.output[i] = target[i]
 
 	def total_error(self):
 		"""
@@ -51,8 +52,17 @@ class Mlp():
 		error = 0
 		first_output_neuron = self.terminal_neurons + self.hidden_neurons 
 		for i in range(self.terminal_neurons):
-			error += 1/2 * (target[i] - self.output[first_output_neuron + i])^2 
+			error += 1/2 * (self.target[i] - self.output[first_output_neuron + i])**2 
 		return error
+
+	def update_all_neurons(self):
+		"""
+		Update the output for all neurons in the network 
+		"""
+		for i in range(self.hidden_neurons):
+			self.output[self.terminal_neurons+i] = self.processes_output(self.hidden_total_net_input(i)) 
+		for i in range (self.terminal_neurons):
+			self.output[self.terminal_neurons+self.hidden_neurons+i] = self.processes_output(self.ouput_total_net_input(i))
 
 	def ouput_total_net_input(self, neuron_number):
 		"""
@@ -62,7 +72,7 @@ class Mlp():
 
 		for i in range(self.hidden_neurons):
 			total_input += self.hidden_weights[i*self.terminal_neurons + neuron_number]*self.output[i + self.terminal_neurons]
-		total_input += bias[2]
+		total_input += self.bias[2]
 		return total_input 
 
 	def hidden_total_net_input(self, neuron_number):
@@ -73,15 +83,15 @@ class Mlp():
 
 		for i in range(self.terminal_neurons):
 			total_input += self.input_weights[i*self.hidden_neurons + neuron_number]*self.output[i]
-		total_input += bias[1]
+		total_input += self.bias[1]
 		return total_input
 
-	def output(self, total_net_input):
+	def processes_output(self, total_net_input):
 		"""
 		Calculates the output of the neuron based in the logistic function
 		(activation function)
 		"""
-		return 1/(1 + e^(-total_net_input))
+		return 1/(1 + math.exp(-total_net_input))
 
 
 	def output_error_derivative(self, respect_weight):
@@ -120,6 +130,28 @@ class Mlp():
 		dOutdNet = self.output[h]*(1-self.output[h])
 		dNetdW = self.output[i] 
 		return dEdOuth*dOutdNet*dNetdW		
+
+
+	def update_input_weights(self, weight_number, derivative, learn_rate):
+		"""
+		Decreases weitght of input neuron in network 
+		"""
+		self.input_weights[weight_number] -= learn_rate*derivative
+
+
+	def update_hidden_weights(self, weight_number, derivative, learn_rate):
+		"""
+		Decreases weitght of input neuron in network 
+		"""
+		self.hidden_weights[weight_number] -= learn_rate*derivative
+
+	def print_outputs(self):
+		"""
+		Displays the output of the neural network
+		"""
+		for i in range(self.terminal_neurons):
+			print (str(self.output[self.terminal_neurons+self.hidden_neurons+i])+' '+str(self.output[i]))
+		print('')
 
 
 
