@@ -103,7 +103,23 @@ class Mlp():
 		"""
 		Calculates error derivative for an hidden neuron with respect to a weight 
 		"""
+		h_relative = int(respect_weight/self.hidden_neurons)
+		i_relative = respect_weight%self.hidden_neurons
 
+		h = h_relative + self.terminal_neurons
+		i = i_relative
+		
+		dEdOuth = 0
+		first_output_neuron = self.terminal_neurons+self.hidden_neurons
+		for i in range(self.terminal_neurons):
+			dEdOut = -(self.target[i]-self.output[i+first_output_neuron]) 
+			dOutdNet = self.output[i+first_output_neuron]*(1-self.output[i+first_output_neuron])
+			dNetdOut = self.output[i+first_output_neuron] 
+			dEdOuth += dEdOuth*dOutdNet*dNetdOut
+			
+		dOutdNet = self.output[h]*(1-self.output[h])
+		dNetdW = self.output[i] 
+		return dEdOuth*dOutdNet*dNetdW		
 
 
 
