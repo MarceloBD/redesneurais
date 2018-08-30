@@ -124,8 +124,7 @@ class Mlp():
 		for i in range(self.terminal_neurons):
 			dEdOut = -(self.target[i]-self.output[i+first_output_neuron]) 
 			dOutdNet = self.output[i+first_output_neuron]*(1-self.output[i+first_output_neuron])
-			#dNetdOut = self.output[i+first_output_neuron] 
-			dNetdOut = self.hidden_weights[h_relative*self.terminal_neurons+i_relative]
+			dNetdOut = self.output[i+first_output_neuron] 
 			dEdOuth += dEdOuth*dOutdNet*dNetdOut
 			
 		dOutdNet = self.output[h]*(1-self.output[h])
