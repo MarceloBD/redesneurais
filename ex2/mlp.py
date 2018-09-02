@@ -60,9 +60,9 @@ class Mlp():
 		Update the output for all neurons in the network 
 		"""
 		for i in range(self.hidden_neurons):
-			self.output[self.terminal_neurons+i] = self.processes_output(self.hidden_total_net_input(i)) 
+			self.output[self.terminal_neurons + i] = self.processes_input(self.hidden_total_net_input(i)) 
 		for i in range (self.terminal_neurons):
-			self.output[self.terminal_neurons+self.hidden_neurons+i] = self.processes_output(self.ouput_total_net_input(i))
+			self.output[self.terminal_neurons + self.hidden_neurons + i] = self.processes_input(self.ouput_total_net_input(i))
 
 	def ouput_total_net_input(self, neuron_number):
 		"""
@@ -86,7 +86,7 @@ class Mlp():
 		total_input += self.bias[1]
 		return total_input
 
-	def processes_output(self, total_net_input):
+	def processes_input(self, total_net_input):
 		"""
 		Calculates the output of the neuron based in the logistic function
 		(activation function)
@@ -117,7 +117,6 @@ class Mlp():
 		i_relative = respect_weight%self.hidden_neurons
 
 		h = h_relative + self.terminal_neurons
-		i = i_relative
 		
 		dEdOuth = 0
 		first_output_neuron = self.terminal_neurons+self.hidden_neurons
