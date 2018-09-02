@@ -33,8 +33,7 @@ class Mlp():
 		number_weights_in_layer = int(self.hidden_neurons**self.terminal_neurons)
 		self.input_weights = [random.uniform(0, 1) for _ in range(number_weights_in_layer)]
 		self.hidden_weights = [random.uniform(0, 1) for _ in range(number_weights_in_layer)]
-		self.bias = [random.uniform(0, 1) for _ in range(3)]
-		self.bias[0] = 0
+		self.bias = [random.uniform(0, 1) for _ in range(self.hidden_neurons+self.terminal_neurons)]
 		self.output = [0 for _ in range(2*self.terminal_neurons + self.hidden_neurons)]
 		
 	def set_target(self, target):
@@ -99,7 +98,7 @@ class Mlp():
 		Calculates error derivative for an output neuron with respect to a weight 
 		"""
 		h_relative = int(respect_weight/self.terminal_neurons)
-		o_relative = respect_weight%self.terminal_neurons
+		o_relative = int(respect_weight%self.terminal_neurons)
 
 		h = h_relative + self.terminal_neurons
 		o = o_relative + self.terminal_neurons + self.hidden_neurons
@@ -113,9 +112,8 @@ class Mlp():
 		"""
 		Calculates error derivative for an hidden neuron with respect to a weight 
 		"""
-		h_relative = int(respect_weight/self.hidden_neurons)
-		i_relative = respect_weight%self.hidden_neurons
-
+		i_relative = int(respect_weight/self.hidden_neurons)
+		h_relative = int(respect_weight%self.hidden_neurons)
 		h = h_relative + self.terminal_neurons
 		
 		dEdOuth = 0
@@ -123,7 +121,6 @@ class Mlp():
 		for i in range(self.terminal_neurons):
 			dEdOut = -(self.target[i]-self.output[i+first_output_neuron]) 
 			dOutdNet = self.output[i+first_output_neuron]*(1-self.output[i+first_output_neuron])
-			#dNetdOut = self.output[i+first_output_neuron] 
 			dNetdOut = self.hidden_weights[h_relative*self.terminal_neurons+i_relative]
 			dEdOuth += dEdOuth*dOutdNet*dNetdOut
 			
@@ -131,7 +128,35 @@ class Mlp():
 		dNetdW = self.output[i] 
 		return dEdOuth*dOutdNet*dNetdW		
 
+	"""def output_bias_derivative(self, respect_weight):
+		o_relative = respect_weight%self.terminal_neurons
+		o = o_relative + self.terminal_neurons + self.hidden_neurons
+		
+		dEdOut = -(self.target[o_relative]-self.output[o])
+		dOutdNet = self.output[o]*(1-self.output[o])
+		dNetdW = self.bias[self.hidden_neurons + respect_weight] 
+		return dEdOut*dOutdNet*dNetdW	
 
+    def hidden_bias_derivative(self, respect_weight):
+
+    	h_relative = int(respect_weight/self.hidden_neurons)
+		h = h_relative + self.terminal_neurons
+		
+		dEdOuth = 0
+		first_output_neuron = self.terminal_neurons+self.hidden_neurons
+		for i in range(self.terminal_neurons):
+			dEdOut = -(self.target[i]-self.output[i+first_output_neuron]) 
+			dOutdNet = self.output[i+first_output_neuron]*(1-self.output[i+first_output_neuron])
+			dNetdOut = self.hidden_weights[h_relative*self.terminal_neurons+i_relative]
+			dEdOuth += dEdOuth*dOutdNet*dNetdOut
+			
+		dOutdNet = self.output[h]*(1-self.output[h])
+		dNetdW = self.output[i] 
+		return dEdOuth*dOutdNet*dNetdW	
+
+    def update_bias():
+    	return
+"""
 	def update_input_weights(self, weight_number, derivative, learn_rate):
 		"""
 		Decreases weitght of input neuron in network 
