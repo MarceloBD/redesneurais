@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
 	mpl.set_target(target[0])
 	mpl.update_all_neurons()
-	while(mean_error > 0.05 and epochs < 5000):
+	while(mean_error > 0.05 and epochs < 20000):
 		print (mean_error)
 		mean_error = 0
 		epochs += 1
@@ -29,9 +29,11 @@ if __name__ == '__main__':
 				#	mpl.update_hidden_weights(i, mpl.output_error_derivative(i), learn_rate)
 					mpl.hidden_error_derivative(i)
 					mpl.output_error_derivative(i)
-	#			for i in range(mpl.terminal_neurons):
-	#				mpl.output_bias_derivative(i)
-	#			mpl.update_bias_weights(learn_rate)
+				for i in range(mpl.terminal_neurons):
+					mpl.output_bias_derivative(i)
+				for i in range(mpl.hidden_neurons):
+					mpl.hidden_bias_derivative(i)
+				mpl.update_bias_weights(learn_rate)
 				mpl.update_weights(learn_rate)
 				mpl.update_all_neurons()
 		for i in range(5):

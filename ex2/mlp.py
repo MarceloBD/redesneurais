@@ -37,7 +37,8 @@ class Mlp():
 		self.output = [0 for _ in range(2*self.terminal_neurons + self.hidden_neurons)]
 		self.hidden_derivatives = [0 for _ in range(number_weights_in_layer)]
 		self.output_derivatives = [0 for _ in range(number_weights_in_layer)]
-		self.bias_derivatives = [0 for _ in range(self.terminal_neurons)]
+		self.bias_out_derivatives = [0 for _ in range(self.terminal_neurons)]
+		self.bias_hid_derivatives = [0 for _ in range(self.hidden_neurons)]
 
 	def set_target(self, target):
 		"""
@@ -145,30 +146,33 @@ class Mlp():
 		dOutdNet = self.output[o]*(1-self.output[o])
 		dNetdW = self.bias[self.hidden_neurons + respect_weight] 
 
-		self.bias_derivatives[respect_weight] = dEdOut*dOutdNet*dNetdW
+		self.bias_out_derivatives[respect_weight] = dEdOut*dOutdNet*dNetdW
 		return dEdOut*dOutdNet*dNetdW	
 
 	def update_bias_weights(self, learn_rate):
 		for i in range(self.terminal_neurons):
-			self.bias[self.hidden_neurons + i] -= learn_rate*self.bias_derivatives[i]
+			self.bias[self.hidden_neurons + i] -= learn_rate*self.bias_out_derivatives[i]
+		for i in range(self.hidden_neurons):
+			self.bias[i] -= learn_rate*self.bias_hid_derivatives[i]
 
 	def hidden_bias_derivative(self, respect_weight):
 		bias = respect_weight
+		h_relative = bias
+		h = h_relative + self.terminal_neurons
 
 		dEdOuth = 0
 		first_output_neuron = self.terminal_neurons+self.hidden_neurons
 		for i in range(self.terminal_neurons):
 			dEdOut = -(self.target[i]-self.output[i+first_output_neuron]) 
 			dOutdNet = self.output[i+first_output_neuron]*(1-self.output[i+first_output_neuron])
-			dNetdOut = self.bias[self.hidden_neurons + i]
+			dNetdOut = self.hidden_weights[h_relative*self.terminal_neurons + i]
 			dEdOuth += dEdOuth*dOutdNet*dNetdOut
 			
 		dOutdNet = self.output[h]*(1-self.output[h])
-		dNetdW = self.output[i_relative] 
-		return dEdOuth*dOutdNet*dNetdW		
+		dNetdW = self.bias[bias]
 
-	def update_bias():
-		return
+		self.bias_hid_derivatives[respect_weight] =  dEdOuth*dOutdNet*dNetdW	
+		return dEdOuth*dOutdNet*dNetdW		
 
 	def update_input_weights(self, weight_number, derivative, learn_rate):
 		"""
