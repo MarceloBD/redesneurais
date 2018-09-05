@@ -66,3 +66,7 @@ if __name__ == '__main__':
 	mpl.set_target(target[0])
 	mpl.update_all_neurons()
 	mpl.print_outputs()
+
+	mpl.set_target([1,1,1,1,1,1,1,1])
+	mpl.update_all_neurons()
+	mpl.print_outputs()
