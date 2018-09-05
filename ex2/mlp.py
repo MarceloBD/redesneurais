@@ -144,7 +144,8 @@ class Mlp():
 		
 		dEdOut = -(self.target[o_relative]-self.output[o])
 		dOutdNet = self.output[o]*(1-self.output[o])
-		dNetdW = self.bias[self.hidden_neurons + respect_weight] 
+		dNetdW = 1 
+		#self.bias[self.hidden_neurons + respect_weight] 
 
 		self.bias_out_derivatives[respect_weight] = dEdOut*dOutdNet*dNetdW
 		return dEdOut*dOutdNet*dNetdW	
@@ -169,7 +170,8 @@ class Mlp():
 			dEdOuth += dEdOuth*dOutdNet*dNetdOut
 			
 		dOutdNet = self.output[h]*(1-self.output[h])
-		dNetdW = self.bias[bias]
+		dNetdW = 1 
+		#self.bias[bias]
 
 		self.bias_hid_derivatives[respect_weight] =  dEdOuth*dOutdNet*dNetdW	
 		return dEdOuth*dOutdNet*dNetdW		
