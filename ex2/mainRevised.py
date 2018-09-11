@@ -3,24 +3,38 @@ from mlp import Mlp
 import numpy as np
 import sys as sys
 
-MATRIX_LEN = 3
+matrix = [0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0,\
+		  0,0,0,0,0,0,0,0,0,0]
+
+
+new_matrix = matrix.copy()
+new_matrix[0] = 1
+target = [new_matrix]		 
+
+for i in range(1,10):
+	new_matrix = matrix.copy()
+	new_matrix[i*10+i] = 1
+	target = np.vstack([target, new_matrix])
+
 learn_rate = 0.5
 MIN_MEAN_ERROR = 0.005
-MIN_SET_ERROR = 0.04
+MIN_SET_ERROR = 0.01
 MAX_EPOCHS = 1000
 epochs = 0
 mean_error = sys.maxsize
 
-matrix = [0 for _ in range(MATRIX_LEN**2)]
-new_matrix = matrix.copy()
-new_matrix[0] = 1
-target = [new_matrix]		 
-for i in range(1,MATRIX_LEN):
-	new_matrix = matrix.copy()
-	new_matrix[i*MATRIX_LEN+i] = 1
-	target = np.vstack([target, new_matrix])
+first = 0 
 
 TRAINSET_LEN = np.size(target, 0)
+MATRIX_LEN = np.size(target, 1)
 
 if __name__ == '__main__':
 	mpl = Mlp(MATRIX_LEN)
