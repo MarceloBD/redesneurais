@@ -42,13 +42,18 @@ class mlp():
     def activation_function(self, x):
         return 1/(1 + np.exp(-x))
 
-    def backward(self, y):
+    def backward(self, v, Y, labels, learn_rate):
+        error = [(sum(label - y)**2)/2 for t, y in zip(labels, Y)]
         return
 
     def recognize(self, data):
-        return
+        for i in range(self.n_layers):
+            aux = [sum(np.multiply(w[0], x)) + b
+                   for w, x, b in zip(self.weights, data, self.biases)]
+            Y.append([self.activation_function(x) for x in aux])
+        return Y
 
-    def backpropagation(self, data, labels, epochs):
+    def backpropagation(self, data, labels, epochs, learn_rate):
         v, y = self.foward(data)
-        self.backward(v, y)
+        self.backward(v, y, labels)
         return
