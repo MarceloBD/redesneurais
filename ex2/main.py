@@ -3,24 +3,23 @@ from mlp import Mlp
 import numpy as np
 import sys as sys
 
-MATRIX_LEN = 3
-learn_rate = 0.8
-MIN_MEAN_ERROR = 0.01
+MATRIX_LEN = 10
+learn_rate = 0.5
+MIN_MEAN_ERROR = 0.05
 MIN_SET_ERROR = 0.01
-MAX_EPOCHS = 1000
+MAX_EPOCHS = 1
 epochs = 0
 mean_error = sys.maxsize
 
-matrix = [0 for _ in range(MATRIX_LEN**2)]
-new_matrix = matrix.copy()
-new_matrix[0] = 1
-target = [new_matrix]		 
-for i in range(1,MATRIX_LEN):
-	new_matrix = matrix.copy()
-	new_matrix[i*MATRIX_LEN+i] = 1
-	target = np.vstack([target, new_matrix])
+
+eye = [0 for _ in range(MATRIX_LEN**2)]
+for i in range(MATRIX_LEN):
+	eye[i*MATRIX_LEN+i]=1
+
+target = [eye]
 
 TRAINSET_LEN = np.size(target, 0)
+
 
 if __name__ == '__main__':
 	mpl = Mlp(MATRIX_LEN**2)
@@ -65,4 +64,4 @@ if __name__ == '__main__':
 
 	mpl.set_target(eye)
 	mpl.update_all_neurons()
-	mpl.print_outputs()
+	mpl.print_out_matrix(MATRIX_LEN)

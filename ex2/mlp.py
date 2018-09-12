@@ -57,7 +57,7 @@ class Mlp():
 		error = 0
 		first_output_neuron = self.terminal_neurons + self.hidden_neurons 
 		for i in range(self.terminal_neurons):
-			error += 1/2 * (self.target[i] - self.output[first_output_neuron + i])**2 
+			error += 1/2.0 * (self.target[i] - self.output[first_output_neuron + i])**2 
 		return error
 
 	def update_all_neurons(self):
@@ -187,6 +187,13 @@ class Mlp():
 		for i in range(self.hidden_neurons*self.terminal_neurons):
 			self.hidden_weights[i] -= learn_rate*self.hidden_derivatives[i]
 			self.output_weights[i] -= learn_rate*self.output_derivatives[i]
+
+
+	def print_out_matrix(self, len):
+		for i in range(len):
+			for j in range (len):
+				print ("%.3f " % self.output[self.terminal_neurons+self.hidden_neurons+i*len+j],end='')
+			print('')
 
 	def print_outputs(self):
 		"""
