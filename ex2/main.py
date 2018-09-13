@@ -5,7 +5,7 @@ import sys as sys
 
 MATRIX_LEN = 10
 learn_rate = 0.5
-MIN_MEAN_ERROR = 0.05
+MIN_MEAN_ERROR = 0.01
 MIN_SET_ERROR = 0.01
 MAX_EPOCHS = 1
 epochs = 0
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 				mpl.update_bias_weights(learn_rate)
 				mpl.update_weights(learn_rate)
 				mpl.update_all_neurons()
-		
+				print(mpl.total_error())
 		mean_error = 0
 		for i in range(TRAINSET_LEN):
 			mpl.set_target(target[i])
@@ -52,16 +52,6 @@ if __name__ == '__main__':
 		mean_error = mean_error/TRAINSET_LEN
 		print (mean_error)
 
-	print ("epochs utilized " + str(epochs))
 	for i in range(TRAINSET_LEN):
 		mpl.set_target(target[i])
-		mpl.update_all_neurons()
-		mpl.print_outputs()
-	
-	eye = [0 for _ in range(MATRIX_LEN**2)]
-	for i in range(MATRIX_LEN):
-		eye[i*MATRIX_LEN+i]=1
-
-	mpl.set_target(eye)
-	mpl.update_all_neurons()
-	mpl.print_out_matrix(MATRIX_LEN)
+		mpl.print_out_matrix(MATRIX_LEN)

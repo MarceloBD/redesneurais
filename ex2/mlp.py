@@ -98,7 +98,7 @@ class Mlp():
 		Calculates the output of the neuron based in the logistic function
 		(activation function)
 		"""
-		return 1/(1 + math.exp(-total_net_input))
+		return 1.0/(1 + math.exp(-total_net_input))
 
 	def calculate_output_delta(self):
 		for i in range (self.terminal_neurons):
@@ -147,12 +147,6 @@ class Mlp():
 
 		self.bias_out_derivatives[respect_weight] = self.output_delta[o_relative]*dNetdW	
 
-	def update_bias_weights(self, learn_rate):
-		for i in range(self.terminal_neurons):
-			self.bias[self.hidden_neurons + i] -= learn_rate*self.bias_out_derivatives[i]
-		for i in range(self.hidden_neurons):
-			self.bias[i] -= learn_rate*self.bias_hid_derivatives[i]
-
 	def hidden_bias_derivative(self, respect_weight):
 		bias = respect_weight
 		h_relative = bias
@@ -168,20 +162,12 @@ class Mlp():
 		dNetdW = 1 
 
 		self.bias_hid_derivatives[respect_weight] =  dEdOuth*dOutdNet*dNetdW	
-
-	def update_hidden_weights(self, weight_number, derivative, learn_rate):
-		"""
-		Decreases weitght of input neuron in network 
-		"""
-		self.hidden_weights[weight_number] -= learn_rate*derivative
-
-
-	def update_output_weights(self, weight_number, derivative, learn_rate):
-		"""
-		Decreases weitght of input neuron in network 
-		"""
-		self.output_weights[weight_number] -= learn_rate*derivative
-
+	
+	def update_bias_weights(self, learn_rate):
+		for i in range(self.terminal_neurons):
+			self.bias[self.hidden_neurons + i] -= learn_rate*self.bias_out_derivatives[i]
+		for i in range(self.hidden_neurons):
+			self.bias[i] -= learn_rate*self.bias_hid_derivatives[i]
 
 	def update_weights(self, learn_rate):
 		for i in range(self.hidden_neurons*self.terminal_neurons):
@@ -194,11 +180,3 @@ class Mlp():
 			for j in range (len):
 				print ("%.3f " % self.output[self.terminal_neurons+self.hidden_neurons+i*len+j],end='')
 			print('')
-
-	def print_outputs(self):
-		"""
-		Displays the output of the neural network
-		"""
-		for i in range(self.terminal_neurons):
-			print (str(self.output[self.terminal_neurons+self.hidden_neurons+i])+' '+str(self.output[i]))
-		print('')
