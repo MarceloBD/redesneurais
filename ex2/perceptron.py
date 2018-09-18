@@ -8,7 +8,7 @@ class Perceptron():
         self.bias = random.uniform(0, 1)
 
     def activation_function(self, x):
-        return 1/(1+np.exp(-x))
+        return 1/(1+np.exp(-2*x))
 
     def recognize(self, data):
         out = self.activation_function(sum([a*b for a, b in
