@@ -11,12 +11,12 @@ class Mlp():
 		self.hidden_neurons = hidden_neurons + 1
 		self.output_neurons = output_neurons + 1 
 
-		self.number_weights_in_layer  = int((self.input_neurons -1)*self.hidden_neurons)
+		self.number_weights_in_layer  = int((self.input_neurons )*(self.hidden_neurons-1))
 		self.number_weights_hid_layer = int((self.hidden_neurons -1)*self.hidden_neurons)
-		self.number_weights_out_layer = int((self.hidden_neurons -1)*self.output_neurons)
+		self.number_weights_out_layer = int(self.hidden_neurons*(self.output_neurons-1))
 
 		self.weights = [random.uniform(0, 1) for _ in range(self.number_weights_in_layer)]
-		for i in range(self.hidden_layers):
+		for i in range(self.hidden_layers-1):
 			new_hid_weight = [random.uniform(0, 1) for _ in range(self.number_weights_hid_layer)]
 			self.weights = np.concatenate((self.weights, new_hid_weight),axis=0)
 		output_weights = [random.uniform(0, 1) for _ in range(self.number_weights_out_layer)]
@@ -27,10 +27,10 @@ class Mlp():
 
 		self.first_output_neuron = self.input_neurons + self.hidden_neurons*self.hidden_layers 
 
-		self.derivatives = [random.uniform(0, 1) for _ in range(self.number_weights_in_layer+self.number_weights_out_layer+self.number_weights_hid_layer*self.hidden_layers)]
+		self.derivatives = [random.uniform(0, 1) for _ in range(self.number_weights_in_layer+self.number_weights_out_layer+self.number_weights_hid_layer*(self.hidden_layers-1))]
 
-		self.output[self.input_neurons-1] = 0
-		for i in range(1,self.hidden_layers):
+		self.output[self.input_neurons-1] = 1
+		for i in range(1,self.hidden_layers+1):
 			self.output[i*hidden_neurons+self.input_neurons-1] = 1
 		self.output[self.first_output_neuron+self.output_neurons-1] = 1
 
@@ -57,7 +57,7 @@ class Mlp():
 
 		for i in range(self.hidden_layers - 1):
 			for j in range(self.hidden_neurons):
-				self.output[i + self.input_neurons] = activation_function(total_net_input(i + self.input_neurons, i + 1))
+				self.output[i + self.input_neurons] = activation_function(total_net_input(j + self.input_neurons, i + 1))
 
 		for i in range(self.output_neurons):
 			self.output[self.first_output_neuron + i] = activation_function(total_net_input(i + self.first_output_neuron, self.hidden_layers))
@@ -65,12 +65,15 @@ class Mlp():
 	def total_net_input(self, neuron_number, layer_number):
 		total_input = 0
 		if(layer_number == 0):
+			h_relative = neuron_number-self.input_neurons
 			for i in range(self.input_neurons):
-				total_input += self.output[i]*self.weights[i]
+				total_input += self.output[i]*self.weights[i*(self.hidden_neurons-1)+h_relative]
 		else:
 			first_neuron_layer = self.input_neurons+(layer_number-1)*self.hidden_neurons
+			h_relative = neuron_number - self.input_neurons
+			first_weight_layer = self.number_weights_in_layer + (layer_number-1)*self.number_weights_hid_layer
 			for i in range(self.hidden_neurons):
-				total_input += self.output[i+first_neuron_layer]*self.weights[i+first_neuron_layer]
+				total_input += self.output[i+first_neuron_layer]*self.weights[i*(self.hidden_neurons-1)+h_relative+first_weight_layer]
 		return total_input
 
 
