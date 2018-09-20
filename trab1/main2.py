@@ -4,7 +4,7 @@ from mult_layer_percepton import mlp
 dataset = np.identity(3)
 learn_rate = 0.1
 epochs = 10000
-mlp = mlp(1, 3, 3, 3)
+mlp = mlp(1, 3, 10, 1)
 
 if __name__ == '__main__':
    

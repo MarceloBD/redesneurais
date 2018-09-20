@@ -56,28 +56,34 @@ class Mlp():
 
     def forward(self):
         for i in range(self.hidden_neurons-1):
-            self.output[i + self.input_neurons] = self.activation_function(self.total_net_input(i + self.input_neurons, 0))
+            self.output[i + self.input_neurons] = self.activation_function(self.total_net_input(i, 0))
 
-        for i in range(self.hidden_layers - 1):
+        for i in range(1, self.hidden_layers):
             for j in range(self.hidden_neurons-1):
-                self.output[i + self.input_neurons] = self.activation_function(self.total_net_input(j + self.input_neurons, i + 1))
+                self.output[i + self.input_neurons] = self.activation_function(self.total_net_input(j , i))
 
         for i in range(self.output_neurons - 1):
-            self.output[self.first_output_neuron + i] = self.activation_function(self.total_net_input(i + self.first_output_neuron, self.hidden_layers))
+            self.output[self.first_output_neuron + i] = self.activation_function(self.total_net_input(i , self.hidden_layers))
 
     def total_net_input(self, neuron_number, layer_number):
         
         total_input = 0
         if(layer_number == 0):
-            h_relative = neuron_number-self.input_neurons
+            h_relative = neuron_number
             for i in range(self.input_neurons):
                 total_input += self.output[i]*self.weights[i*(self.hidden_neurons-1)+h_relative]
-        else:
+        elif(layer_number < self.hidden_layers):
             first_neuron_layer = self.input_neurons + (layer_number-1)*self.hidden_neurons
-            h_relative = neuron_number - self.input_neurons
-            first_weight_layer = self.number_weights_in_layer + (layer_number-2)*self.number_weights_hid_layer
+            h_relative = neuron_number 
+            first_weight_layer = self.number_weights_in_layer + (layer_number-1)*self.number_weights_hid_layer
             for i in range(self.hidden_neurons):
                 total_input += self.output[i+first_neuron_layer]*self.weights[i*(self.hidden_neurons-1)+first_weight_layer+h_relative]
+        else:
+        	first_neuron_layer = self.input_neurons + (layer_number-1)*self.hidden_neurons
+        	h_relative = neuron_number
+        	first_weight_layer = self.number_weights_in_layer + (layer_number-1)*self.number_weights_hid_layer
+        	for i in range(self.hidden_neurons):
+        		total_input += self.output[i+first_neuron_layer]*self.weights[i*(self.output_neurons-1)+first_weight_layer+h_relative]
         return total_input
 
     def backpropagation_deltas(self):
@@ -104,7 +110,7 @@ class Mlp():
             h = h_relative + self.input_neurons             
             dEdOuth = 0
             for i in range(self.output_neurons-1):
-                dNetdOut = self.weights[h_relative*self.output_neurons+i]
+                dNetdOut = self.weights[h_relative*(self.output_neurons-1)+i+self.number_weights_in_layer]
                 dEdOuth += self.output_delta[i]*dNetdOut
                     
             dOutdNet = self.output[h]*(1-self.output[h])
@@ -115,14 +121,14 @@ class Mlp():
         for i in range(self.number_weights_hid_layer):  
             i_relative = int(i/self.hidden_neurons)
             h_relative = int(i%self.hidden_neurons)
-            h = h_relative + self.input_neurons             
+            h = h_relative + self.input_neurons + self.hidden_neurons*layer            
             dEdOuth = 0
             for j in range(self.output_neurons-1):
                 dNetdOut = self.weights[h_relative*self.output_neurons+j]
                 dEdOuth += self.output_delta[j]*dNetdOut
                     
             dOutdNet = self.output[h]*(1-self.output[h])
-            dNetdW = self.output[i_relative]
+            dNetdW = self.output[i_relative + self.input_neurons + self.hidden_neurons*(layer-1)]
             first_weight_layer = self.number_weights_in_layer + self.number_weights_hid_layer*(layer-1)
             self.derivatives[first_weight_layer+i] = dEdOuth*dOutdNet*dNetdW        
     
@@ -142,7 +148,7 @@ class Mlp():
         self.backpropagation_output()
         self.backpropagation_hidden_first()
         for i in range(1,self.hidden_layers-1):
-            self.backpropagation_hidden_others()
+            self.backpropagation_hidden_others(i)
 
     def update_weights(self, learn_rate):
         for i in range(len(self.weights)):
@@ -153,3 +159,8 @@ class Mlp():
         print("")
         for i in range(len(self.target)):
             print(self.output[self.first_output_neuron+i])
+
+    def print_all_output(self):
+    	print("")
+    	for i in range(len(self.output)):
+    		print(self.output[i])
