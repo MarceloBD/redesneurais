@@ -28,6 +28,7 @@ class Mlp():
         self.first_output_neuron = self.input_neurons + self.hidden_neurons*self.hidden_layers 
 
         self.derivatives = [random.uniform(0, 1) for _ in range(len(self.weights))]
+        self.last_update = [0 for _ in range(len(self.weights))]
 
         self.output[self.input_neurons-1] = 1
         for i in range(1,self.hidden_layers+1):
@@ -150,10 +151,10 @@ class Mlp():
         for i in range(1,self.hidden_layers-1):
             self.backpropagation_hidden_others(i)
 
-    def update_weights(self, learn_rate):
+    def update_weights(self, learn_rate, m):
         for i in range(len(self.weights)):
-            self.weights[i] -= learn_rate*self.derivatives[i]
-
+            self.weights[i] -= learn_rate*self.derivatives[i] + m*self.last_update[i]
+            self.last_update[i] = learn_rate*self.derivatives[i] + m*self.last_update[i]
 
     def print_output(self):
         print("")

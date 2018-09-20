@@ -3,7 +3,9 @@ import data_handler as data
 import numpy as np
 
 if __name__ == '__main__':
-<<<<<<< HEAD
+
+    """
+    <<<<<<< HEAD
     mlp = Mlp(9, 9, 5, 4)    
     mlp.set_target([1,0,0,0,1,0,0,0,1])
     mlp.set_input([1,0,0,0,1,0,0,0,1])
@@ -30,7 +32,9 @@ if __name__ == '__main__':
     	mlp.backpropagation()
     	mlp.update_weights(0.4)
     	print(mlp.total_error())
-=======
+    mlp.print_output()
+    =======
+    """
     mlp = Mlp(13*13, 9, 2, 2)
     # loading data
     inputs, labels = data.open_data('wine.arff', 3)
@@ -45,9 +49,9 @@ if __name__ == '__main__':
     while(mlp.total_error() > 0.005):
         mlp.forward()
         mlp.backpropagation()
-        mlp.update_weights(0.1)
+        mlp.update_weights(0.1, 0.9)
         print(mlp.total_error())
->>>>>>> 770f29e6958da69e40900b5b92f5685c31ad2aaa
+#>>>>>>> 770f29e6958da69e40900b5b92f5685c31ad2aaa
 
     mlp.print_output()
-   # mlp.print_all_output()
+   # mlp.print_all_output()'''
