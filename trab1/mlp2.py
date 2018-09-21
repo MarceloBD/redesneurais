@@ -158,8 +158,14 @@ class Mlp():
 
     def print_output(self):
         print("")
+        out = []
         for i in range(len(self.target)):
             print(self.output[self.first_output_neuron+i])
+            out.append(self.output[self.first_output_neuron+i])
+        aux = np.zeros(len(self.target))
+        aux[np.argmax(out)] = 1
+        aux = list(map(int, aux))
+        return aux
 
     def print_all_output(self):
     	print("")
