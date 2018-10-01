@@ -28,6 +28,17 @@ def open_data(file_name, num_classes):
     return data, labels
 
 
+def open_data_tracks(file_name):
+    data = []
+    # oppening file
+    with open(file_name, 'r') as file:
+        # reading file
+        data = list(csv.reader(file))
+        # converting everything to float
+        data = [list(map(float, x)) for x in data]
+    return norm(data)
+
+
 def shuffle_data_and_labels(data, labels):
     aux = list(zip(data, labels))
     np.random.shuffle(aux)
