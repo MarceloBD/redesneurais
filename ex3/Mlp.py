@@ -3,7 +3,7 @@ import numpy as np
 
 
 class Mlp():
-    def __init__(num_layers, layer_size, num_inputs, num_outputs):
+    def __init__(self, num_layers, layer_size, num_inputs, num_outputs):
         self.num_layers = num_layers
         self.layer_size = layer_size
         self.num_inputs = num_inputs
@@ -27,8 +27,8 @@ class Mlp():
         # output layer
         layer += 1
         weights[layer] = tf.Variable(tf.random_normal([self.layer_size,
-                                                       n_classes]))
-        biases[layer] = tf.Variable(tf.random_normal([n_classes]))
+                                                       self.num_outputs]))
+        biases[layer] = tf.Variable(tf.random_normal([self.num_outputs]))
 
         layer_out = {-1: input_data}
 
@@ -44,35 +44,47 @@ class Mlp():
         return layer_out[layer]
 
     def train_and_evaluate(self, inputs, labels, test_inputs, test_labels,
-                           num_epochs, learn_rate, batch_size):
+                           num_epochs, learn_rate, batch_size, momentum):
+        # output from the network
         prediction = self.neural_network(self.inputs)
+        # calculating the cost
         cost = tf.reduce_mean(
                 tf.nn.softmax_cross_entropy_with_logits_v2(logits=prediction,
                                                            labels=self.outputs)
                 )
-        optimizer = tf.train.AdamOptimizer().minimize(cost)
+        # defining the optimizer
+        optimizer = tf.train.MomentumOptimizer(learning_rate=learn_rate,
+                                               momentum=momentum
+                                               ).minimize(cost)
         with tf.Session() as sess:
+            # initializing tf variables
             sess.run(tf.global_variables_initializer())
             for epoch in range(num_epochs):
                 epoch_loss = 0
                 i = 0
                 while i < len(inputs):
-                    epoch_x = np.array(inputs[i:i+batch_size])
-                    epoch_y = np.array(labels[i:i+batch_size])
+                    # separating in batchs
+                    epoch_input = np.array(inputs[i:i+batch_size])
+                    epoch_label = np.array(labels[i:i+batch_size])
+                    # training
                     _, c = sess.run([optimizer, cost],
-                                    feed_dict={x: epoch_x, y: epoch_y})
+                                    feed_dict={self.inputs: epoch_input,
+                                               self.outputs: epoch_label})
                     epoch_loss += c
                     i += batch_size
                 print('Epoch', epoch, 'completed out of',
                       num_epochs, 'loss:', epoch_loss)
+                # at each 200 epochs, validate the model
                 if(epoch % 200 == 0):
                     correct = tf.equal(tf.argmax(prediction, 1),
                                        tf.argmax(self.outputs, 1))
                     accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
-                    print('Accuracy:', accuracy.eval({x: np.array(test_inputs),
-                                                      y: np.array(test_labels)
-                                                      }))
-            correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(y, 1))
+                    print('Accuracy:', accuracy.eval(
+                        {self.inputs: np.array(test_inputs),
+                         self.outputs: np.array(test_labels)
+                         }))
+            # computing the accuracy
+            correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(self.outputs, 1))
             accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
-            print('Accuracy:', accuracy.eval({x: np.array(test_inputs),
-                  y: np.array(test_labels)}))
+            print('Accuracy:', accuracy.eval({self.inputs: np.array(test_inputs),
+                  self.outputs: np.array(test_labels)}))

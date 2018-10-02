@@ -1,38 +1,21 @@
-import tensorflow as tf 
-import os 
-feature_names = ['area', 'perimeter', 'compactness', 'length_of_kernel', 'width_of_kernel', 'asymmetry_coefficient', 'length_of_kernel_groove', 'variety']
-record_defaults = [[1.0],[1.0],[1.0],[1.0],[1.0],[1.0],[1.0],[1.0]]
+from Mlp import Mlp
+import data_handler as data
 
-
-def decode_csv(line):
-   parsed_line = tf.decode_csv(line, record_defaults)
-   label =  parsed_line[-1]      
-   del parsed_line[-1]                       
-   features = tf.stack(parsed_line)  
-   batch_to_return = features, label
-   return batch_to_return
-
-filenames = tf.placeholder(tf.string, shape=[None])
-dataset = tf.data.Dataset.from_tensor_slices(filenames)
-dataset = dataset.flat_map(lambda filename: tf.data.TextLineDataset(filename).skip(0).map(decode_csv))
-dataset = dataset.shuffle(buffer_size=1000)
-dataset = dataset.batch(7)
-iterator = dataset.make_initializable_iterator()
-next_element = iterator.get_next()
-
-training_filenames = ["codebeautify.csv"]
-
-#validation_filenames = ["dev_data1.csv"]
-
-with tf.Session() as sess:     
-    sess.run(iterator.initializer, feed_dict={filenames: training_filenames})
-    while True:
-        try:
-        	features, labels = sess.run(next_element)
-        	print("(train) features: ")
-        	print(features)
-        	print("(train) labels: ")
-        	print(labels)  
-        except tf.errors.OutOfRangeError:
-        	print("Out of range error triggered (looped through training set 1 time)")
-        	break
+if __name__ == '__main__':
+    num_classes = 3
+    num_features = 7
+    num_layers = 3
+    layer_size = 128
+    num_epochs = 2000
+    learn_rate = 0.1
+    batch_size = 21
+    momentum = 0.8
+    inputs, labels = data.open_data('seeds_dataset.txt', num_classes)
+    test_inputs = inputs[int(0.8*len(inputs)):]
+    test_labels = labels[int(0.8*len(labels)):]
+    inputs = inputs[:int(0.8*len(inputs))]
+    labels = labels[:int(0.8*len(labels))]
+    neural_network = Mlp(num_layers, layer_size, num_features, num_classes)
+    neural_network.train_and_evaluate(inputs, labels, test_inputs, test_labels,
+                                      num_epochs, learn_rate, batch_size,
+                                      momentum)
