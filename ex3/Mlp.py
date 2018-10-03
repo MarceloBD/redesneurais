@@ -79,3 +79,5 @@ class Mlp():
             accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
             print('Accuracy:', accuracy.eval({self.inputs: np.array(test_inputs),
                   self.outputs: np.array(test_labels)}))
+            return accuracy.eval({self.inputs: np.array(test_inputs),
+                  self.outputs: np.array(test_labels)})

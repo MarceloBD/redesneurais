@@ -7,15 +7,29 @@ if __name__ == '__main__':
     num_layers = 3
     layer_size = 128
     num_epochs = 2000
-    learn_rate = 0.1
+    learn_rate = 0.01
     batch_size = 21
     momentum = 0.8
+    folds = 10
     inputs, labels = data.open_data('seeds_dataset.txt', num_classes)
-    test_inputs = inputs[int(0.8*len(inputs)):]
-    test_labels = labels[int(0.8*len(labels)):]
-    inputs = inputs[:int(0.8*len(inputs))]
-    labels = labels[:int(0.8*len(labels))]
-    neural_network = Mlp(num_layers, layer_size, num_features, num_classes)
-    neural_network.train_and_evaluate(inputs, labels, test_inputs, test_labels,
+    inputs = inputs + inputs
+    labels = labels + labels
+    accuracy = {}
+    train_folds = (folds-1)/folds
+    test_folds = 1/folds
+
+    for fold in range(folds):
+    	step = fold*int(test_folds*len(inputs)/2)
+    	train_set_len = int(train_folds*len(inputs)/2)+step
+
+    	train_inputs = inputs[step:train_set_len]
+    	train_labels = labels[step:train_set_len]
+
+    	test_inputs = inputs[train_set_len:train_set_len+int(test_folds*len(inputs)/2)]
+    	test_labels = labels[train_set_len:train_set_len+int(test_folds*len(inputs)/2)]
+    	
+    	neural_network = Mlp(num_layers, layer_size, num_features, num_classes)
+    	accuracy[fold] = neural_network.train_and_evaluate(train_inputs, train_labels, test_inputs, test_labels,
                                       num_epochs, learn_rate, batch_size,
                                       momentum)
+    print(sum(accuracy.values())/folds)
