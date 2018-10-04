@@ -8,7 +8,7 @@ if __name__ == '__main__':
     num_features = 7
     num_layers = 3
     layer_size = 128
-    num_epochs = 2000
+    num_epochs = 4000
     learn_rate = 0.01
     batch_size = 21
     momentum = 0.8
@@ -61,7 +61,7 @@ if __name__ == '__main__':
                              test_set_len]
         neural_network = Rbf(num_features, 128)
         for i in range(10):
-            neural_network.fit(train_inputs, train_labels)
+            neural_network.fit_and_train(train_inputs, train_labels)
         predictions_temp = neural_network.predict(test_inputs)
         predictions = np.zeros((len(predictions_temp), num_classes))
         predictions = [list(map(int, x)) for x in predictions]
