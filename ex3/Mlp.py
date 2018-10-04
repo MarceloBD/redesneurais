@@ -75,9 +75,11 @@ class Mlp():
                 print('Epoch', epoch, 'completed out of',
                       num_epochs, 'loss:', epoch_loss)
             # computing the accuracy
-            correct = tf.equal(tf.argmax(prediction, 1), tf.argmax(self.outputs, 1))
+            correct = tf.equal(tf.argmax(prediction, 1),
+                               tf.argmax(self.outputs, 1))
             accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
-            print('Accuracy:', accuracy.eval({self.inputs: np.array(test_inputs),
+            print('Accuracy:', accuracy.eval({
+                  self.inputs: np.array(test_inputs),
                   self.outputs: np.array(test_labels)}))
             return accuracy.eval({self.inputs: np.array(test_inputs),
-                  self.outputs: np.array(test_labels)})
+                                 self.outputs: np.array(test_labels)})
