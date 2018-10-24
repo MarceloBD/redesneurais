@@ -1,40 +1,28 @@
 from CNN import CNN
-import numpy as np
-from tensorflow.keras.datasets import cifar10
-import tensorflow as tf
-import os
-
-def unpickle(file):
-    import pickle
-    with open(file, 'rb') as fo:
-        data = pickle.load(fo, encoding='bytes')
-    return data
+import cv2
 
 
-def make_one_shot_array(value, num_classes):
-    array = np.zeros(num_classes)
-    array[value] = 1
-    return array
-
+names = {0: 'airplane',
+         1: 'automobile',
+         2: 'bird',
+         3: 'cat',
+         4: 'deer',
+         5: 'dog',
+         6: 'frog',
+         7: 'horse',
+         8: 'ship',
+         9: 'truck'}
 
 if __name__ == '__main__':
-    os.environ['CUDA_VISIBLE_DEVICES'] = str( 0 )
-    num_epochs = 1000
     num_classes = 10
+    path = 'test_images/'
     img_size = 32
-    batch_size = 100
     model = CNN(num_classes)
-    #model.load('model.h5')
-    (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-    y_train = tf.keras.utils.to_categorical(y_train, num_classes)
-    y_test = tf.keras.utils.to_categorical(y_test, num_classes)
-    x_train = x_train.astype('float32')
-    x_test = x_test.astype('float32')
-    x_train /= 255
-    x_test /= 255
-    shape = x_train.shape[1:]
-    model.create_network(shape)
-    model.train_model(x_train, y_train, num_epochs, batch_size)
-    model.validate(x_test, y_test, 1)
-    model.save('model.h5')
-
+    # model.load('model.h5')
+    images = []
+    for key, value in names.items():
+        img = cv2.imread(path + value + '.jpeg', cv2.IMREAD_COLOR)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.resize(img, (img_size, img_size))
+        images.append(img)
+    images = [image/255 for image in images]

@@ -20,7 +20,8 @@ class CNN():
         model.add(tf.keras.layers.MaxPooling2D(self.pool_size))
         model.add(tf.keras.layers.Dropout(0.1))
         for layer in range(1, self.num_layers):
-            model.add(tf.keras.layers.Conv2D(layer*self.filter_size, self.kernel_size))
+            model.add(tf.keras.layers.Conv2D(layer*self.filter_size,
+                                             self.kernel_size))
             model.add(tf.keras.layers.Activation('relu'))
             model.add(tf.keras.layers.MaxPooling2D(self.pool_size))
             model.add(tf.keras.layers.Dropout(0.1))
@@ -50,3 +51,6 @@ class CNN():
     def load(self, path):
         self.model = tf.keras.models.load_model(path)
 
+    def recognize(self, image):
+        prediction = self.model.predict(image)
+        return prediction
