@@ -23,6 +23,7 @@ class CNN():
             model.add(tf.keras.layers.Activation('relu'))
             model.add(tf.keras.layers.MaxPooling2D(self.pool_size))
         model.add(tf.keras.layers.Flatten())
+        model.add(tf.keras.layers.Dropout(0.2))
         model.add(tf.keras.layers.Dense(self.num_classes,
                   activation=tf.nn.softmax))
         model.compile(loss='categorical_crossentropy',
@@ -34,7 +35,7 @@ class CNN():
     def train_model(self, input_data, labels, num_epochs, batch_size):
         self.model.fit(input_data, labels,
                        epochs=num_epochs,
-                       steps_per_epoch=batch_size)
+                       batch_size=batch_size)
 
     def validate(self, test_input, test_labels, steps):
         loss, accuracy = self.model.evaluate(test_input, test_labels,
