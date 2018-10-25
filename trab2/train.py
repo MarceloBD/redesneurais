@@ -24,7 +24,6 @@ if __name__ == '__main__':
     img_size = 32
     batch_size = 100
     model = CNN(num_classes)
-    # model.load('model.h5')
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
     y_train = tf.keras.utils.to_categorical(y_train, num_classes)
     y_test = tf.keras.utils.to_categorical(y_test, num_classes)
@@ -35,5 +34,5 @@ if __name__ == '__main__':
     shape = x_train.shape[1:]
     model.create_network(shape)
     model.train_model(x_train, y_train, num_epochs, batch_size)
-    model.validate(x_test, y_test, 1)
+    model.validate(x_test, y_test, 10)
     model.save('model.h5')
