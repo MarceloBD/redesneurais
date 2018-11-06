@@ -14,6 +14,10 @@ if __name__ == '__main__':
 	data = preprocessing.scale(data)
 	print(data, target)
 
+	pca = Pca()
+	c = pca.cov_matrix(data[:,0], data[:,1], data[:,2])
+	print(c)
+
 	pca_result = decomposition.PCA(n_components=3)
 	pca_result.fit(data)
 	points = pca_result.transform(data)
