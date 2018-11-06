@@ -1,14 +1,20 @@
 from pca import Pca
 import numpy as np 
+from sklearn.datasets import load_iris
+from sklearn import preprocessing
+from sklearn import decomposition
+
 
 def read_file():
-	read_data = open("iris.data").read().lower()
-	read_data = read_data.replace('\n',',')
-	data_set = np.array([data for data in read_data.split(',')])
-	data_set = data_set[:len(data_set)-2]
-	data_set = data_set.reshape(int(len(data_set)/5), 5)
-	return data_set
+	iris = load_iris()
+	return iris.data, iris.target
 
 if __name__ == '__main__':
-	data_set = read_file()
-	print(data_set)
+	data, target = read_file()
+	data = preprocessing.scale(data)
+	print(data, target)
+
+	pca_result = decomposition.PCA(n_components=3)
+	pca_result.fit(data)
+	points = pca_result.transform(data)
+	print(points)
