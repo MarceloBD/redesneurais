@@ -15,10 +15,18 @@ if __name__ == '__main__':
 	print(data, target)
 
 	pca = Pca()
-	c = pca.cov_matrix(data[:,0], data[:,1], data[:,2])
-	print(c)
+	cov = pca.cov_matrix(data[:,0], data[:,1], data[:,2])
+	
+	values, vectors = pca.eigen_values_vectors(cov)
+	pca.sort_eigen(values, vectors)
+
+
+
+
+
+	print(cov)
 
 	pca_result = decomposition.PCA(n_components=3)
 	pca_result.fit(data)
 	points = pca_result.transform(data)
-	print(points)
+	#print(points)
