@@ -32,7 +32,7 @@ class Pca():
 			var += values[i]
 			if(var/np.sum(values) > var_min):
 				break; 
-		return vec 
+		return vec[:,1:]
 
 	def pca_result(self, data, vectors):
 		return np.matmul(np.matrix.transpose(vectors), np.matrix.transpose(data))
