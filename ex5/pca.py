@@ -19,20 +19,20 @@ class Pca():
 	def sort_eigen(self, values, vectors):
 		ordered_index = np.argsort(-np.array(values))[:len(values)]
 		values_ordered = [values[i] for i in ordered_index]
-		vectors_ordered = np.empty((4,1), float)
+		vectors_ordered = np.empty((4,0), float)
 		for i in ordered_index:
 			vectors_ordered = np.hstack((vectors_ordered, vectors[:,i].reshape(4,1)))
-		return [values_ordered, vectors_ordered[:,1:]]
+		return [values_ordered, vectors_ordered]
 
 	def eigen_strip_vectors(self, values, vectors, var_min):	
 		var = 0
-		vec = np.empty((4,1), float)
+		vec = np.empty((4,0), float)
 		for i in range(len(values)):
 			vec = np.hstack((vec, vectors[:,i].reshape(4,1)))
 			var += values[i]
 			if(var/np.sum(values) > var_min):
 				break; 
-		return vec[:,1:]
+		return vec
 
 	def pca_result(self, data, vectors):
 		return np.matmul(np.matrix.transpose(vectors), np.matrix.transpose(data))

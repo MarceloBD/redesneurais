@@ -19,35 +19,22 @@ colors = {0: 'ro',
 if __name__ == '__main__':
     data, target = read_file()
     data = preprocessing.scale(data)
-    #print(data, target)
 
     pca = Pca()
     cov = pca.cov_matrix(data[:, 0], data[:, 1], data[:, 2], data[:, 3])
 
     values, vectors = pca.eigen_values_vectors(cov)
-
-#   print(values)
-#   print(vectors)
     values, vectors = pca.sort_eigen(values, vectors)
-#   print(values, vectors)
 
-    vectors = pca.eigen_strip_vectors(values, vectors, 0.90)
-#   print(vectors)
+    vectors = pca.eigen_strip_vectors(values, vectors, 0.98)
+
+    print(vectors)
     values = values[:len(vectors[0])]
 
-    #print(values)
-    #print(data)
-    #print(vectors)
-
     result = np.matrix.transpose(pca.pca_result(data,
-                                 vectors)).reshape(len(data), len(data[0])-2)
+                                 vectors)).reshape(len(data), len(data[0])-1)
     result[:, 1] = -result[:, 1]
-
-    pca_result = decomposition.PCA(n_components=3)
-    pca_result.fit(data)
-    points = pca_result.transform(data)
-    print(points)
-    print(target)
+    points = result
     count = 0
     class_points = []
     fig = plt.figure()
@@ -60,7 +47,7 @@ if __name__ == '__main__':
         x = class_points[:, 0]
         y = class_points[:, 1]
         z = class_points[:, 2]
-        ax.plot(x, y, z, colors[label], label=str(count))
+        ax.plot(x, y, z,colors[label], label=str(count))
         count += 1
         class_points = []
     plt.grid()
