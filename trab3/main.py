@@ -5,7 +5,7 @@ from sklearn import preprocessing
 from sklearn import decomposition
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-
+from pcaadapt import PcaAdapt
 
 def read_file():
     iris = load_iris()
@@ -18,6 +18,13 @@ colors = {0: 'ro',
 
 if __name__ == '__main__':
 	############################################## 2d
+    pcaAdapt = PcaAdapt(2)
+    pcaAdapt.train([[1,2], [3,4]])
+
+
+
+
+    '''  
     data, target = read_file()
     data = preprocessing.scale(data)
 
@@ -88,3 +95,4 @@ if __name__ == '__main__':
         class_points = []
     plt.grid()
     plt.show()
+    '''
