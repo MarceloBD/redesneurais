@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+from keras.layers import Dropout
 
 class MLP():
     def __init__(self, num_classes, num_layers=3,
@@ -18,6 +18,7 @@ class MLP():
         for layer in range(1, self.num_layers):
             model.add(tf.keras.layers.Dense(self.layers_sizes[layer],
                                             activation='relu'))
+            model.add(tf.keras.layers.Dropout(0.2))
         model.add(tf.keras.layers.Dense(self.num_classes,
                                         activation='softmax'))
         self.model = model
