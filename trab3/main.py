@@ -15,6 +15,8 @@ def read_file():
 
 batch_size = 2
 num_epochs = 1000
+number_final_att = 13
+
 
 if __name__ == '__main__':
 	############################################## 2d
@@ -28,7 +30,7 @@ if __name__ == '__main__':
     pcaAdapt = PcaAdapt(13)
     pcaAdapt.train(data)
 
-    result = np.matrix.transpose(pcaAdapt.pca_result(data)).reshape(len(data), 13)    
+    result = np.matrix.transpose(pcaAdapt.pca_result(data)).reshape(len(data), number_final_att)    
 
 
     mlp = MLP(3)
