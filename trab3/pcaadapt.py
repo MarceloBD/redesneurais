@@ -1,9 +1,10 @@
 import numpy as np 
 import random
 
-hebbian_rate = 0.01
+hebbian_rate = 0.001
 alpha = 0.01
 mu = 0.0001	  
+eigen = 13
 
 class PcaAdapt():
 
@@ -16,15 +17,24 @@ class PcaAdapt():
 		return
 
 	def train(self, inputs):
-		self.print_lateral_weights()
+	 #self.print_lateral_weights()
 		for i in range(30):
 			for inp in inputs:	
 				self.calculate_outputs(inp)
 				self.update_weights()
 				self.update_lateral_weights()
-			self.print_lateral_weights()
+			#self.print_lateral_weights()
 			self.loss()
+		self.save_eigen_vectors()
 		return
+
+	def save_eigen_vectors(self):
+		self.eigen_vectors = np.empty((13,0), float)
+		for i in range(eigen):
+			self.eigen_vectors = np.hstack((self.eigen_vectors, self.weights[:,i].reshape(13,1)))
+
+	def pca_result(self, data):
+		return np.matmul(np.matrix.transpose(self.eigen_vectors), np.matrix.transpose(data))
 
 	def print_lateral_weights(self):
 		print('lateral')
@@ -33,7 +43,7 @@ class PcaAdapt():
 		#print(self.weights)
 
 	def loss(self):
-		print('loss: ', np.var(self.outputs)/np.linalg.norm(self.weights))
+	#	print('loss: ', np.var(self.outputs)/np.linalg.norm(self.weights))
 
 		lateral = 0
 		for i in range(self.input_len):

@@ -7,15 +7,14 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from pcaadapt import PcaAdapt
 import data_handler as data
+from MLP import MLP
 
 def read_file():
     iris = load_iris()
     return iris.data, iris.target
 
-
-colors = {0: 'ro',
-          1: 'bo',
-          2: 'go'}
+batch_size = 2
+num_epochs = 1000
 
 if __name__ == '__main__':
 	############################################## 2d
@@ -27,10 +26,19 @@ if __name__ == '__main__':
     data = preprocessing.scale(inputs)
 
     pcaAdapt = PcaAdapt(13)
-    pcaAdapt.train(data[:5,:])
+    pcaAdapt.train(data)
+
+    result = np.matrix.transpose(pcaAdapt.pca_result(data)).reshape(len(data), 13)    
+
+
+    mlp = MLP(3)
 
 
 
+    points = result
+    inputs = points
+    mlp.create_network(inputs.shape[1:], 0.001)
+    mlp.train(inputs, labels, num_epochs, batch_size)
 
     '''  
     data, target = read_file()
