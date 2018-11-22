@@ -1,9 +1,9 @@
 import numpy as np 
 import random
 
-hebbian_rate = 0.1
-alpha = 0.1
-mu = 0.1
+hebbian_rate = 0.01
+alpha = 0.01
+mu = 0.01	  
 
 class PcaAdapt():
 
@@ -16,16 +16,24 @@ class PcaAdapt():
 		return
 
 	def train(self, inputs):
-		for i in range(5000):
+		self.print_lateral_weights()
+		for i in range(30):
 			for inp in inputs:	
 				self.calculate_outputs(inp)
 				self.update_weights()
 				self.update_lateral_weights()
-			self.print_lateral_weights()
+			#self.print_lateral_weights()
+			self.loss()
 		return
 
 	def print_lateral_weights(self):
+		print('lateral')
 		print(self.lateral_weights)
+		print('weights')
+		print(self.weights)
+
+	def loss(self):
+		print('loss: ', np.var(self.outputs)/np.linalg.norm(self.weights))
 
 	def calculate_outputs(self, inp):
 		self.outputs = np.zeros(self.input_len)
@@ -33,17 +41,14 @@ class PcaAdapt():
 		for j_out in range(self.input_len):
 			for i_in in range(self.input_len): 
 				self.outputs[j_out] +=  self.weights[i_in][j_out]*inp[i_in]
-			for l in range(self.input_len):
-				if(l < j_out):
-					self.outputs[j_out] += self.lateral_weights[i_in][j_out]*self.outputs[j_out]
-				else:
-					break 
+			for l in range(self.input_len, j_out):
+				self.outputs[j_out] += self.lateral_weights[l][j_out]*self.outputs[j_out]
 		return
 
 	def update_weights(self):
 		for i in range(self.input_len):
 			for j in range(self.input_len):
-				self.weights[i][j] += hebbian_rate*self.outputs[j]*self.inputs[i] - alpha * self.outputs[j]**2 *self.weights[i][j]
+				self.weights[i][j] += hebbian_rate*self.outputs[j]*self.inputs[i] - alpha * (self.outputs[j]**2) *self.weights[i][j]
 		return 
 
 	def update_lateral_weights(self):

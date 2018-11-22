@@ -6,6 +6,7 @@ from sklearn import decomposition
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from pcaadapt import PcaAdapt
+import data_handler as data
 
 def read_file():
     iris = load_iris()
@@ -18,8 +19,15 @@ colors = {0: 'ro',
 
 if __name__ == '__main__':
 	############################################## 2d
-    pcaAdapt = PcaAdapt(2)
-    pcaAdapt.train([[1,2], [3,4]])
+    inputs, labels = data.open_data('wine.arff', 3)
+    inputs = np.array(inputs)
+    labels = np.array(labels)
+
+    pca = Pca()
+    data = preprocessing.scale(inputs)
+
+    pcaAdapt = PcaAdapt(13)
+    pcaAdapt.train(data[:5,:])
 
 
 
