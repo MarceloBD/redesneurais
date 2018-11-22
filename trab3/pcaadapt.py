@@ -1,9 +1,9 @@
 import numpy as np 
 import random
 
-hebbian_rate = 0.001
+hebbian_rate = 0.0001
 alpha = 0.01
-mu = 0.0001	  
+mu = 0.001	  
 eigen = 13
 
 class PcaAdapt():
