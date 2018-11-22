@@ -3,7 +3,7 @@ import random
 
 hebbian_rate = 0.01
 alpha = 0.01
-mu = 0.01	  
+mu = 0.0001	  
 
 class PcaAdapt():
 
@@ -22,18 +22,24 @@ class PcaAdapt():
 				self.calculate_outputs(inp)
 				self.update_weights()
 				self.update_lateral_weights()
-			#self.print_lateral_weights()
+			self.print_lateral_weights()
 			self.loss()
 		return
 
 	def print_lateral_weights(self):
 		print('lateral')
 		print(self.lateral_weights)
-		print('weights')
-		print(self.weights)
+		#print('weights')
+		#print(self.weights)
 
 	def loss(self):
 		print('loss: ', np.var(self.outputs)/np.linalg.norm(self.weights))
+
+		lateral = 0
+		for i in range(self.input_len):
+			for j in range(i , self.input_len):
+				lateral += np.abs(self.lateral_weights[i][j])
+		print('e: ', lateral )
 
 	def calculate_outputs(self, inp):
 		self.outputs = np.zeros(self.input_len)
